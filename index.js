@@ -1,30 +1,24 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cookieParser = require('cookie-parser');
-const app = express();
-const PORT = process.env.PORT || 3000;
+const express = require("express")
+const app = express()
+const port=5000;
+const mongodb=require("./Db");
+mongodb();
+
+app.use((req,res,next)=>{
+  res.setHeader("Access-Control-Allow-Origin","http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE","http://localhost:3000");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With,Content-Type,Accept"
+  );
+  next();
+})
 
 app.use(express.json());
-app.use(cookieParser())
-
-mongoose
-  .connect("mogoose:url--Enter your url", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Database is connected successfully😎");
-  })
-  .catch((err) => {
-    console.log(err, "something went wrong");
-  });
-
-const authRoutes = require("./routes/authRoutes");
-const blogRoutes = require("./routes/blogRoutes");
-
-app.use("/auth", authRoutes);
-app.use("/blogs", blogRoutes);
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.use('/api',require("./Routes/Createuser"));
+app.use('/api',require("./Routes/Senddata"));
+app.use('/api',require("./Addblog"));
+app.get('/',(req,res)=>{
+  res.send("hello saiesh")
+})
+app.listen(port,()=> console.log(`server running at {port}`));
